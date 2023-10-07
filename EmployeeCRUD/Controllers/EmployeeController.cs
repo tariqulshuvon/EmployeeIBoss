@@ -24,13 +24,17 @@ public class EmployeeController : ControllerBase
 
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<TblEmplyee>> GetEmployee(int id)
+    [HttpGet("{all}")]
+    public async Task<ActionResult<IEnumerable<TblEmpAttendance>>> GetAllEmployees()
     {
-
-        var employee = await _dbContext.TblEmplyees.FindAsync(id);
-        return employee;
-
+       var result = await _dbContext.TblEmpAttendances
+            .Where(att => !_dbContext.TblEmplyees
+            .Any(
+                e => att.EmployeeeId == e.EmployeeId && att.IsPreset ==1))
+            
+            .ToListAsync();
+        
+        return result;
 
     }
 
